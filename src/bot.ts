@@ -49,15 +49,4 @@ bot.onText(/^\/dog$/, async (msg: Message) => {
   }
 });
 
-bot.onText(/(.+)/, (msg: Message, match: RegExpExecArray | null) => {
-  const chatId = msg.chat.id;
-  if (match) {
-    const resp = match[1];
-    console.log(match.length);
-    bot.sendMessage(chatId, resp);
-  } else {
-    bot.sendMessage(chatId, `Your Message ${msg.text}`);
-  }
-});
-
 export default bot;
