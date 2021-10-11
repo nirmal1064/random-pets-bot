@@ -22,6 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+process.env.NTBA_FIX_319 = "10";
 const dotenv = __importStar(require("dotenv"));
 const node_telegram_bot_api_1 = __importDefault(require("node-telegram-bot-api"));
 const api_1 = require("./api");
@@ -51,7 +52,7 @@ bot.onText(/\/random_dog/, async (msg) => {
 bot.onText(/\/echo (.+)/, (msg, match) => {
     const chatId = msg.chat.id;
     if (match) {
-        const resp = match[1]; // the captured "whatever"
+        const resp = match[1];
         console.log(match.length);
         bot.sendMessage(chatId, resp);
     }

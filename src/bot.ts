@@ -1,3 +1,4 @@
+process.env.NTBA_FIX_319 = "10";
 import * as dotenv from "dotenv";
 import TelegramBot from "node-telegram-bot-api";
 import { getImage } from "./api";
@@ -32,7 +33,7 @@ bot.onText(/\/random_dog/, async (msg) => {
 bot.onText(/\/echo (.+)/, (msg, match) => {
   const chatId = msg.chat.id;
   if (match) {
-    const resp = match[1]; // the captured "whatever"
+    const resp = match[1];
     console.log(match.length);
     bot.sendMessage(chatId, resp);
   } else {
