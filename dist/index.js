@@ -30,7 +30,7 @@ const BOT_API_TOKEN = process.env.BOT_API_TOKEN || "";
 let bot;
 if (process.env.NODE_ENV === "production") {
     bot = new node_telegram_bot_api_1.default(BOT_API_TOKEN);
-    bot.setWebHook(process.env.HEROKU_URL + BOT_API_TOKEN);
+    bot.setWebHook(process.env.HEROKU_URL + "bot" + BOT_API_TOKEN);
 }
 else {
     bot = new node_telegram_bot_api_1.default(BOT_API_TOKEN, { polling: true });
@@ -39,8 +39,6 @@ bot.onText(/\/start/, (msg) => {
     bot.sendMessage(msg.chat.id, `Hey ${msg.chat.first_name}`);
 });
 bot.onText(/\/random_dog/, async (msg) => {
-    console.log("User requested");
-    console.log(msg);
     const resp = await (0, api_1.getImage)();
     if (resp) {
         bot.sendPhoto(msg.chat.id, resp);

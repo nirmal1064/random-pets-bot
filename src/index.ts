@@ -10,7 +10,7 @@ let bot: TelegramBot;
 
 if (process.env.NODE_ENV === "production") {
   bot = new TelegramBot(BOT_API_TOKEN);
-  bot.setWebHook(process.env.HEROKU_URL + BOT_API_TOKEN);
+  bot.setWebHook(process.env.HEROKU_URL + "bot" + BOT_API_TOKEN);
 } else {
   bot = new TelegramBot(BOT_API_TOKEN, { polling: true });
 }
@@ -20,8 +20,6 @@ bot.onText(/\/start/, (msg) => {
 });
 
 bot.onText(/\/random_dog/, async (msg) => {
-  console.log("User requested");
-  console.log(msg);
   const resp = await getImage();
   if (resp) {
     bot.sendPhoto(msg.chat.id, resp);
