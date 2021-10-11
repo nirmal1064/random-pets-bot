@@ -1,7 +1,7 @@
 process.env.NTBA_FIX_319 = "10";
 import * as dotenv from "dotenv";
-import TelegramBot from "node-telegram-bot-api";
-import { getImage } from "./api";
+import TelegramBot, { Message } from "node-telegram-bot-api";
+import { getDogFact, getDogImage } from "./api/dogs";
 
 dotenv.config();
 
@@ -17,12 +17,12 @@ if (process.env.NODE_ENV === "production") {
   bot = new TelegramBot(BOT_API_TOKEN, { polling: true });
 }
 
-bot.onText(/\/start/, (msg) => {
+bot.onText(/\/start/, (msg: Message) => {
   bot.sendMessage(msg.chat.id, `Hey ${msg.chat.first_name}`);
 });
 
-bot.onText(/\/random_dog/, async (msg) => {
-  const resp = await getImage();
+bot.onText(/^\/random_dog_image$/, async (msg: Message) => {
+  const resp = await getDogImage();
   if (resp) {
     bot.sendPhoto(msg.chat.id, resp);
   } else {
@@ -30,7 +30,16 @@ bot.onText(/\/random_dog/, async (msg) => {
   }
 });
 
-bot.onText(/\/echo (.+)/, (msg, match) => {
+bot.onText(/^\/random_dog_fact$/, async (msg: Message) => {
+  const resp = await getDogFact();
+  if (resp) {
+    bot.sendMessage(msg.chat.id, resp);
+  } else {
+    bot.sendMessage(msg.chat.id, `No dogs found`);
+  }
+});
+
+bot.onText(/\/echo (.+)/, (msg: Message, match: RegExpExecArray | null) => {
   const chatId = msg.chat.id;
   if (match) {
     const resp = match[1];

@@ -2,7 +2,6 @@ import express, { Request, Response } from "express";
 import bot from "./bot";
 
 const app = express();
-
 const PORT = process.env.PORT || 8000;
 
 app.use(express.json());
