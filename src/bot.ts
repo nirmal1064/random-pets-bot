@@ -1,7 +1,7 @@
 process.env.NTBA_FIX_319 = "10";
 import * as dotenv from "dotenv";
-import TelegramBot, { Message } from "node-telegram-bot-api";
-import { getDogFact, getDogImage } from "./api/dogs";
+import TelegramBot, { Message, SendPhotoOptions } from "node-telegram-bot-api";
+import { getDog, getDogFact, getDogImage } from "./api/dogs";
 
 dotenv.config();
 
@@ -39,7 +39,17 @@ bot.onText(/^\/random_dog_fact$/, async (msg: Message) => {
   }
 });
 
-bot.onText(/\/echo (.+)/, (msg: Message, match: RegExpExecArray | null) => {
+bot.onText(/^\/dog$/, async (msg: Message) => {
+  const resp = await getDog();
+  if (resp) {
+    const photoOptions: SendPhotoOptions = { caption: `Fact: ${resp.fact}` };
+    bot.sendPhoto(msg.chat.id, resp.image, photoOptions);
+  } else {
+    bot.sendMessage(msg.chat.id, `No dogs found`);
+  }
+});
+
+bot.onText(/(.+)/, (msg: Message, match: RegExpExecArray | null) => {
   const chatId = msg.chat.id;
   if (match) {
     const resp = match[1];

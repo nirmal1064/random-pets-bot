@@ -1,5 +1,9 @@
 import axios from "axios";
-import { RANDOM_DOG_FACTS, RANDOM_DOG_IMAGE } from "../utils/constants";
+import {
+  DOG_API_ENDPOINT,
+  RANDOM_DOG_FACTS,
+  RANDOM_DOG_IMAGE
+} from "../utils/constants";
 
 interface dogImage {
   message: string;
@@ -7,6 +11,11 @@ interface dogImage {
 }
 
 interface dogFact {
+  fact: string;
+}
+
+interface animal {
+  image: string;
   fact: string;
 }
 
@@ -26,6 +35,15 @@ export const getDogFact = async () => {
   try {
     const resp: dogFact = await (await axios.get(RANDOM_DOG_FACTS)).data;
     return resp.fact;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const getDog = async () => {
+  try {
+    const resp: animal = await (await axios.get(DOG_API_ENDPOINT)).data;
+    return resp;
   } catch (error) {
     return null;
   }
