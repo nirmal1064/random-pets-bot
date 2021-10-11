@@ -1,40 +1,24 @@
 import * as dotenv from "dotenv";
-import TelegramBot from "node-telegram-bot-api";
-import { getImage } from "./api";
-
+import express, { Request, Response } from "express";
+import bot from "./bot";
 dotenv.config();
 
-const BOT_API_TOKEN: string = process.env.BOT_API_TOKEN || "";
+const app = express();
 
-let bot: TelegramBot;
+const PORT = process.env.PORT || 8000;
 
-if (process.env.NODE_ENV === "production") {
-  bot = new TelegramBot(BOT_API_TOKEN);
-  bot.setWebHook(process.env.HEROKU_URL + "bot" + BOT_API_TOKEN);
-} else {
-  bot = new TelegramBot(BOT_API_TOKEN, { polling: true });
-}
+app.use(express.json());
 
-bot.onText(/\/start/, (msg) => {
-  bot.sendMessage(msg.chat.id, `Hey ${msg.chat.first_name}`);
+app.get("/", (req: Request, res: Response) => {
+  res.status(200).json({ message: "Hello From Random Pets Bot API" });
 });
 
-bot.onText(/\/random_dog/, async (msg) => {
-  const resp = await getImage();
-  if (resp) {
-    bot.sendPhoto(msg.chat.id, resp);
-  } else {
-    bot.sendMessage(msg.chat.id, `No dogs found`);
-  }
+app.post(`/${process.env.BOT_API_TOKEN}`, (req: Request, res: Response) => {
+  console.log("Post method");
+  bot.processUpdate(req.body);
+  res.status(200).json({ message: "Telegram Bot Okay" });
 });
 
-bot.onText(/\/echo (.+)/, (msg, match) => {
-  const chatId = msg.chat.id;
-  if (match) {
-    const resp = match[1]; // the captured "whatever"
-    console.log(match.length);
-    bot.sendMessage(chatId, resp);
-  } else {
-    bot.sendMessage(chatId, `Your Message ${msg.text}`);
-  }
+app.listen(PORT, () => {
+  console.log(`App listening on port ${PORT}`);
 });

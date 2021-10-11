@@ -23,20 +23,40 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv = __importStar(require("dotenv"));
-const express_1 = __importDefault(require("express"));
-const bot_1 = __importDefault(require("./bot"));
+const node_telegram_bot_api_1 = __importDefault(require("node-telegram-bot-api"));
+const api_1 = require("./api");
 dotenv.config();
-const app = (0, express_1.default)();
-const PORT = process.env.PORT || 8000;
-app.use(express_1.default.json());
-app.get("/", (req, res) => {
-    res.status(200).json({ message: "Hello From Random Pets Bot API" });
+const BOT_API_TOKEN = process.env.BOT_API_TOKEN || "";
+let bot;
+if (process.env.NODE_ENV === "production") {
+    console.log("Running in Production mode");
+    bot = new node_telegram_bot_api_1.default(BOT_API_TOKEN);
+    bot.setWebHook(process.env.HEROKU_URL + BOT_API_TOKEN);
+}
+else {
+    bot = new node_telegram_bot_api_1.default(BOT_API_TOKEN, { polling: true });
+}
+bot.onText(/\/start/, (msg) => {
+    bot.sendMessage(msg.chat.id, `Hey ${msg.chat.first_name}`);
 });
-app.post(`/${process.env.BOT_API_TOKEN}`, (req, res) => {
-    console.log("Post method");
-    bot_1.default.processUpdate(req.body);
-    res.status(200).json({ message: "Telegram Bot Okay" });
+bot.onText(/\/random_dog/, async (msg) => {
+    const resp = await (0, api_1.getImage)();
+    if (resp) {
+        bot.sendPhoto(msg.chat.id, resp);
+    }
+    else {
+        bot.sendMessage(msg.chat.id, `No dogs found`);
+    }
 });
-app.listen(PORT, () => {
-    console.log(`App listening on port ${PORT}`);
+bot.onText(/\/echo (.+)/, (msg, match) => {
+    const chatId = msg.chat.id;
+    if (match) {
+        const resp = match[1]; // the captured "whatever"
+        console.log(match.length);
+        bot.sendMessage(chatId, resp);
+    }
+    else {
+        bot.sendMessage(chatId, `Your Message ${msg.text}`);
+    }
 });
+exports.default = bot;
