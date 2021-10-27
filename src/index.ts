@@ -1,10 +1,12 @@
 import express, { Request, Response } from "express";
+import helmet from "helmet";
 import bot from "./bot";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
 
 app.use(express.json());
+app.use(helmet.hidePoweredBy());
 
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({ message: "Hello From Random Pets Bot API" });
