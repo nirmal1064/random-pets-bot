@@ -1,7 +1,7 @@
 process.env.NTBA_FIX_319 = "10";
 import * as dotenv from "dotenv";
 import TelegramBot, { Message, SendPhotoOptions } from "node-telegram-bot-api";
-import { getDog, getDogFact, getDogImage } from "./api/dogs";
+import { getDog, getDogFact, getDogImage, getPanda } from "./api/animals";
 
 dotenv.config();
 
@@ -46,6 +46,16 @@ bot.onText(/^\/dog$/, async (msg: Message) => {
     bot.sendPhoto(msg.chat.id, resp.image, photoOptions);
   } else {
     bot.sendMessage(msg.chat.id, `No dogs found`);
+  }
+});
+
+bot.onText(/^\/panda$/, async (msg: Message) => {
+  const resp = await getPanda();
+  if (resp) {
+    const photoOptions: SendPhotoOptions = { caption: `Fact: ${resp.fact}` };
+    bot.sendPhoto(msg.chat.id, resp.image, photoOptions);
+  } else {
+    bot.sendMessage(msg.chat.id, `No panda found`);
   }
 });
 

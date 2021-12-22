@@ -1,6 +1,7 @@
 import axios from "axios";
 import {
   DOG_API_ENDPOINT,
+  PANDA_API_ENDPOINT,
   RANDOM_DOG_FACTS,
   RANDOM_DOG_IMAGE
 } from "../utils/constants";
@@ -43,6 +44,15 @@ export const getDogFact = async () => {
 export const getDog = async () => {
   try {
     const resp: Animal = (await axios.get(DOG_API_ENDPOINT)).data;
+    return resp;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const getPanda = async () => {
+  try {
+    const resp: Animal = (await axios.get(PANDA_API_ENDPOINT)).data;
     return resp;
   } catch (error) {
     return null;
