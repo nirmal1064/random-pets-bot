@@ -1,4 +1,6 @@
 import express, { Request, Response } from "express";
+import * as dotenv from "dotenv";
+dotenv.config();
 import helmet from "helmet";
 import bot from "./bot";
 
